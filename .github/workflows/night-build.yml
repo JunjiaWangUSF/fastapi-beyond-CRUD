@@ -45,6 +45,7 @@ jobs:
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
           MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
           DOMAIN: ${{ secrets.DOMAIN }}
+          DATABASE_URL: postgresql+asyncpg://postgres:testpass@db:5432/bookly
       - name: Install Dependencies
         run: docker-compose exec web pip install -r requirements.txt
         env:
@@ -61,6 +62,7 @@ jobs:
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
           MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
           DOMAIN: ${{ secrets.DOMAIN }}
+          DATABASE_URL: postgresql+asyncpg://postgres:testpass@db:5432/bookly
       - name: Install Test Dependencies
         run: docker-compose exec web pip install pytest pytest-asyncio
 
