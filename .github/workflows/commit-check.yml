@@ -15,6 +15,9 @@ jobs:
         with:
           node-version: "14" # Specify the Node.js version
 
+      - name: Install dependencies
+        run: npm install
+
       - name: Check for Conventional Commits
         uses: wagoid/commitlint-github-action@v2
         with:
@@ -26,22 +29,12 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'This PR has been closed because it does not follow Conventional Commits.'
-            })
             github.pulls.update({
               pull_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'closed'
             })
-
-      - name: Install dependencies
-        if: failure()
-        run: npm install nodemailer
 
       - name: Send failure notification
         if: failure()
