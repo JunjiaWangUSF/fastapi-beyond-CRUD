@@ -11,7 +11,6 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    environment: EMAIL_USER
     services:
       db:
         image: postgres:15
@@ -55,8 +54,10 @@ jobs:
           echo "DOMAIN=${{ secrets.DOMAIN }}" >> .env
           docker-compose up -d
 
-      - name: Install Dependencies
-        run: docker-compose exec web pip install -r requirements.txt
+      - name: Install Application and Test Dependencies
+        run: |
+          docker-compose exec web pip install -r requirements.txt
+          docker-compose exec web pip install pytest pytest-asyncio
 
       - name: Run Tests
         run: docker-compose exec web pytest
