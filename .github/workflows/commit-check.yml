@@ -7,6 +7,7 @@ on:
 jobs:
   check-commits:
     runs-on: ubuntu-latest
+    environment: EMAIL_USER
     steps:
       - uses: actions/checkout@v2
 
