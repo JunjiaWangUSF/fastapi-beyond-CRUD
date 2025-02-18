@@ -7,7 +7,6 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.auth.dependencies import AccessTokenBearer, RoleChecker
 from src.books.service import BookService
 from src.db.main import get_session
-
 from .schemas import Book, BookCreateModel, BookDetailModel, BookUpdateModel
 from src.errors import BookNotFound
 
