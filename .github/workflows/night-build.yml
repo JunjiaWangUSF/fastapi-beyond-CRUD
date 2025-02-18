@@ -32,9 +32,6 @@ jobs:
         run: |
           docker-compose up -d
         env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           REDIS_URL: ${{ secrets.REDIS_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_ALGORITHM: ${{ secrets.JWT_ALGORITHM }}
@@ -47,11 +44,8 @@ jobs:
           DOMAIN: ${{ secrets.DOMAIN }}
           DATABASE_URL: postgresql+asyncpg://postgres:testpass@db:5432/bookly
       - name: Install Dependencies
-        run: docker-compose exec web pip install -r requirements.txt
+        run: docker-compose run --rm --no-tty web pip install -r requirements.txt
         env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           REDIS_URL: ${{ secrets.REDIS_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_ALGORITHM: ${{ secrets.JWT_ALGORITHM }}
@@ -64,10 +58,10 @@ jobs:
           DOMAIN: ${{ secrets.DOMAIN }}
           DATABASE_URL: postgresql+asyncpg://postgres:testpass@db:5432/bookly
       - name: Install Test Dependencies
-        run: docker-compose exec web pip install pytest pytest-asyncio
+        run: docker-compose run --rm --no-tty web pip install pytest pytest-asyncio
 
       - name: Run Tests
-        run: docker-compose exec web pytest
+        run: docker-compose run --rm --no-tty web pytest
 
       - name: Clean up
         if: always()
