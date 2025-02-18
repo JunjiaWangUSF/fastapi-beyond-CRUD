@@ -1,11 +1,11 @@
-version: "3.0"
+version: "3.8" # Updated for newer features
 
 services:
   web:
     build: .
     volumes:
       - .:/app
-    environment: 
+    environment:
       DATABASE_URL: ${DATABASE_URL}
       JWT_SECRET: ${JWT_SECRET}
       JWT_ALGORITHM: ${JWT_ALGORITHM}
@@ -17,56 +17,49 @@ services:
       MAIL_FROM_NAME: ${MAIL_FROM_NAME}
       DOMAIN: ${DOMAIN}
       REDIS_URL: ${REDIS_URL}
-
     ports:
       - "8000:8000"
-
+    command: bash -c "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port 8000"
     depends_on:
       - db
       - redis
-
     networks:
       - app-network
 
   db:
     image: postgres:15
-
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: bookly
       POSTGRES_PASSWORD: testpass
-
     ports:
-     - "5432:5432"
-
+      - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
-
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   redis:
     image: redis:6
-
     ports:
-     - "6379:6379"
-
+      - "6379:6379"
     networks:
-     - app-network
+      - app-network
 
   celery:
     build: .
-
     command: celery -A src.celery_tasks.c_app worker --loglevel=INFO
-
     volumes:
       - .:/app
-
     depends_on:
       - redis
-
     environment:
       REDIS_URL: ${REDIS_URL}
-
     networks:
       - app-network
 
