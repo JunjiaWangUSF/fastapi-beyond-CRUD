@@ -1,0 +1,52 @@
+name: Conventional Commit Check
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14" # Specify the Node.js version
+
+      - name: Check for Conventional Commits
+        uses: wagoid/commitlint-github-action@v2
+        with:
+          configFile: "./commitlint.config.js"
+
+      - name: Close PR
+        if: failure() # If the commit check fails
+        uses: actions/github-script@0.9.0
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'This PR has been closed because it does not follow Conventional Commits.'
+            })
+            github.pulls.update({
+              pull_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed'
+            })
+
+      - name: Install dependencies
+        if: failure()
+        run: npm install nodemailer
+
+      - name: Send failure notification
+        if: failure()
+        run: node ./scripts/sendEmail.js
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_TO: "your-email@example.com"
