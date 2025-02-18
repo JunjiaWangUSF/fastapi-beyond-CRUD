@@ -44,7 +44,7 @@ jobs:
           DOMAIN: ${{ secrets.DOMAIN }}
           DATABASE_URL: postgresql+asyncpg://postgres:testpass@db:5432/bookly
       - name: Install Dependencies
-        run: docker-compose run --rm --no-tty web pip install -r requirements.txt
+        run: docker-compose run --rm web pip install -r requirements.txt
         env:
           REDIS_URL: ${{ secrets.REDIS_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
@@ -58,10 +58,10 @@ jobs:
           DOMAIN: ${{ secrets.DOMAIN }}
           DATABASE_URL: postgresql+asyncpg://postgres:testpass@db:5432/bookly
       - name: Install Test Dependencies
-        run: docker-compose run --rm --no-tty web pip install pytest pytest-asyncio
+        run: docker-compose run --rm web pip install pytest pytest-asyncio
 
       - name: Run Tests
-        run: docker-compose run --rm --no-tty web pytest
+        run: docker-compose run --rm web pytest
 
       - name: Clean up
         if: always()
