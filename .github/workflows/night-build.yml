@@ -30,6 +30,7 @@ jobs:
 
       - name: Set up Docker Compose
         run: |
+          echo "JWT_SECRET: ${{ secrets.JWT_SECRET }}"
           echo "DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}" >> .env
           echo "REDIS_URL=redis://localhost:6379" >> .env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
