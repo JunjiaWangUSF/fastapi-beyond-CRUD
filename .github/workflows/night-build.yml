@@ -73,7 +73,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}/mynightbuild:${{ github.sha }}
+          tags: ghcr.io/junjiawangusf/fastapi-beyond-crud/mynightbuild:${{ github.sha }}
 
       - name: Send failure notification
         if: failure()
