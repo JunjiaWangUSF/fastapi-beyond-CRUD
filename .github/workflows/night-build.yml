@@ -80,7 +80,7 @@ jobs:
 
       - name: Build Docker Image
         if: success()
-        run: docker build -t willaoao/mynightbuild:${{ github.sha }}
+        run: docker build -t willaoao/mynightbuild:${{ github.sha }} .
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2

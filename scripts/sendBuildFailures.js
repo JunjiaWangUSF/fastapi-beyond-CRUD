@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 const mailOptions = {
   from: process.env.EMAIL_USER,
   to: "willwang1228@gmail.com",
-  subject: "Conventional Commits fails",
+  subject: "Night Build Failed",
   text: "Night Build Failed. ",
 };
 
