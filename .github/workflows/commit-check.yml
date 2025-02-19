@@ -9,23 +9,25 @@ jobs:
     runs-on: ubuntu-latest
     environment: EMAIL_USER
     steps:
-      - uses: actions/checkout@v2
-
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "14" # Specify the Node.js version
+          node-version: "14"
 
       - name: Check for Conventional Commits
         uses: wagoid/commitlint-github-action@v2
         with:
           configFile: "./commitlint.config.js"
 
-      - name: Close PR
-        if: failure() # If the commit check fails
+      - name: Close PR if Commit Check Fails
+        if: failure() # This step will execute only if the commitlint check fails
         uses: actions/github-script@0.9.0
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.issues.createComment({
               issue_number: context.issue.number,
@@ -40,14 +42,10 @@ jobs:
               state: 'closed'
             })
 
-      - name: Install dependencies
-        if: failure()
-        run: npm install nodemailer
-
       - name: Send failure notification
-        if: failure()
+        if: failure() # Ensures that this step only runs if the commitlint check fails
         run: |
-          echo "User: $EMAIL_USER"
+          npm install
           node ./scripts/sendEmail.js
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
