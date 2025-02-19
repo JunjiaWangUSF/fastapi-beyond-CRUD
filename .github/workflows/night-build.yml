@@ -3,6 +3,12 @@ name: Night Build
 on:
   schedule:
     - cron: "50 23 * * *" # Runs at 11:50 PM UTC, which is 7:50 PM EDT or 6:50 PM EST
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build-and-test:
@@ -53,6 +59,7 @@ jobs:
           MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
           DOMAIN: ${{ secrets.DOMAIN }}
           DATABASE_URL: postgresql+asyncpg://postgres:testpass@db:5432/bookly
+
       - name: Install Test Dependencies
         run: docker-compose run --rm web pip install pytest pytest-asyncio
 
@@ -83,7 +90,7 @@ jobs:
 
       - name: Send failure notification
         if: failure()
-        run: node ./scripts/sendBuildFailures.js
+        run: npm install nodemailer && node ./scripts/sendBuildFailures.js
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
