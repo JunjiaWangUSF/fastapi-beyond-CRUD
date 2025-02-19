@@ -3,9 +3,7 @@ name: Nightly Build
 on:
   schedule:
     - cron: "0 0 * * *" # Runs every day at midnight
-  push:
-    branches:
-      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -67,19 +65,24 @@ jobs:
           DOMAIN: ${{ secrets.DOMAIN }}
           DATABASE_URL: postgresql+asyncpg://postgres:testpass@db:5432/bookly
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v1
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build and push Docker image
         if: success()
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}/mynightbuild:${{ github.sha }}
+          tags: willaoao/mynightbuild:${{ github.sha }}
 
       - name: Send failure notification
         if: failure()
