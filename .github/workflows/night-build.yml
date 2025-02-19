@@ -1,6 +1,8 @@
 name: Night Build
 
 on:
+  schedule:
+    - cron: "50 23 * * *" # Runs at 11:50 PM UTC, which is 7:50 PM EDT or 6:50 PM EST
   push:
     branches:
       - main
@@ -74,6 +76,23 @@ jobs:
           MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
           DOMAIN: ${{ secrets.DOMAIN }}
           DATABASE_URL: postgresql+asyncpg://postgres:testpass@db:5432/bookly
+
+      - name: Build Docker Image
+        if: success()
+        run: docker build -t willaoao/mynightbuild:${{ github.sha }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ github.sha }}
+
+      - name: Send failure notification
+        if: failure()
+        run: node ./scripts/sendBuildFailures.js
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
       - name: Clean up
         if: always()
         run: docker-compose down
