@@ -2,13 +2,7 @@ name: Night Build
 
 on:
   schedule:
-    - cron: "50 23 * * *" # Runs at 11:50 PM UTC, which is 7:50 PM EDT or 6:50 PM EST
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    - cron: "0 0 * * *" # Run every day at midnight
 
 jobs:
   build-and-test:
