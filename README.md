@@ -1,80 +1,82 @@
-# FastAPI Beyond CRUD 
-
-This is the source code for the [FastAPI Beyond CRUD](https://youtube.com/playlist?list=PLEt8Tae2spYnHy378vMlPH--87cfeh33P&si=rl-08ktaRjcm2aIQ) course. The course focuses on FastAPI development concepts that go beyond the basic CRUD operations.
-
-For more details, visit the project's [website](https://jod35.github.io/fastapi-beyond-crud-docs/site/).
+# FastAPI Beyond CRUD
 
 ## Table of Contents
 
-1. [Getting Started](#getting-started)
-2. [Prerequisites](#prerequisites)
-3. [Project Setup](#project-setup)
-4. [Running the Application](#running-the-application)
-5. [Running Tests](#running-tests)
-6. [Contributing](#contributing)
+1. [Running the Application](#running-the-application)
+
+2. [Contributing](#contributing)
 
 ## Getting Started
+
 Follow the instructions below to set up and run your FastAPI project.
 
 ### Prerequisites
+
 Ensure you have the following installed:
 
-- Python >= 3.10
-- PostgreSQL
-- Redis
+- Docker
 
-### Project Setup
+### Running the Application
+
 1. Clone the project repository:
-    ```bash
-    git clone https://github.com/jod35/fastapi-beyond-CRUD.git
-    ```
-   
+   ```bash
+   git clone https://github.com/jod35/fastapi-beyond-CRUD.git
+   ```
 2. Navigate to the project directory:
-    ```bash
-    cd fastapi-beyond-CRUD/
-    ```
+
+   ```bash
+   cd fastapi-beyond-CRUD/
+   ```
 
 3. Create and activate a virtual environment:
-    ```bash
-    python3 -m venv env
-    source env/bin/activate
-    ```
 
-4. Install the required dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
+   ```bash
+   python3 -m venv env
+   source env/bin/activate
+   ```
 
-5. Set up environment variables by copying the example configuration:
-    ```bash
-    cp .env.example .env
-    ```
+4. Set up environment variables by copying the example configuration:
 
-6. Run database migrations to initialize the database schema:
-    ```bash
-    alembic upgrade head
-    ```
+   ```bash
+   cp .env.example .env
+   ```
 
-7. Open a new terminal and ensure your virtual environment is active. Start the Celery worker (Linux/Unix shell):
-    ```bash
-    sh runworker.sh
-    ```
+5. Run database migrations to initialize the database schema:
+   ```bash
+   docker compose up -d
+   ```
 
-## Running the Application
-Start the application:
+## Github Action
+
+### Convential checking:
+
+commit-check.yml - GitHub actions that verify that Conventional Commits were used during PR creation. Close the PR if a user does not follow the Conventional Commit and send a notification about the failure.
+
+For more information please check here: https://github.com/conventional-changelog/commitlint
+
+### Night time build:
+
+night-build.yml - Create nightly builds (12am UTC) from Main and push the container image to a container registry of choice. If test cases fail, the nightly build fails and cannot be stored in the registry and notification is sent to users.
+
+Github container registry - https://github.com/JunjiaWangUSF?tab=packages
+
+## Script
 
 ```bash
-fastapi dev src/
+/script/sendBuildFailures.js
+/script/sendEmail.js
 ```
-Alternatively, you can run the application using Docker:
-```bash
-docker compose up -d
-```
+
+Each file handle a failure case and will nofiy admin user.
+
 ## Running Tests
+
 Run the tests using this command
+
 ```bash
 pytest
 ```
 
 ## Contributing
+
 I welcome contributions to improve the documentation! You can contribute [here](https://github.com/jod35/fastapi-beyond-crud-docs).
