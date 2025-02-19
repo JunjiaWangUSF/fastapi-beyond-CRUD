@@ -55,6 +55,18 @@ jobs:
 
       - name: Run Tests
         run: docker-compose run --rm web pytest
+        env:
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_ALGORITHM: ${{ secrets.JWT_ALGORITHM }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
+          DOMAIN: ${{ secrets.DOMAIN }}
+          DATABASE_URL: postgresql+asyncpg://postgres:testpass@db:5432/bookly
 
       - name: Build and push Docker image to GitHub Container Registry
         if: success()
